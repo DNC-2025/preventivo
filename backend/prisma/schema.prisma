@@ -14,7 +14,140 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Health {
-  id        Int      @id @default(autoincrement())
+// ─── ENUMS ───────────────────────────────────────────
+
+enum TenantType {
+  PARQUET
+  BUILDER
+  CEILING
+  OTHER
+}
+
+enum UserRole {
+  ADMIN
+  OPERATOR
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum SurchargeType {
+  PERCENT
+  FIXED
+}
+
+// ─── MODELS ──────────────────────────────────────────
+
+model Tenant {
+  id                  String     @id @default(uuid())
+  name                String
+  type                TenantType
+  logoUrl             String?
+  ivaDefault          Float      @default(10.0)
+  wastePercentDefault Float      @default(10.0)
+  createdAt           DateTime   @default(now())
+
+  users       User[]
+  articles    Article[]
+  surcharges  Surcharge[]
+  clients     Client[]
+  quotes      Quote[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  tenantId  String
+  role      UserRole @default(OPERATOR)
+  name      String
+  email     String
   createdAt DateTime @default(now())
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  quotes    Quote[]
+}
+
+model Article {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  category  String
+  unit      String
+  price     Float
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  quoteLines QuoteLine[]
+}
+
+model Surcharge {
+  id        String        @id @default(uuid())
+  tenantId  String
+  name      String
+  type      SurchargeType
+  value     Float
+  createdAt DateTime      @default(now())
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  quoteLines QuoteLine[]
+}
+
+model Client {
+  id                String   @id @default(uuid())
+  tenantId          String
+  nameOrCompany     String
+  address           String?
+  phone             String?
+  email             String?
+  notes             String?
+  createdAt         DateTime @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  quotes  Quote[]
+}
+
+model Quote {
+  id           String      @id @default(uuid())
+  tenantId     String
+  clientId     String
+  createdById  String
+  number       Int
+  date         DateTime    @default(now())
+  validityDays Int         @default(7)
+  status       QuoteStatus @default(DRAFT)
+  notes        String?
+  subtotal     Float       @default(0)
+  ivaRate      Float       @default(10.0)
+  totalFinal   Float       @default(0)
+  createdAt    DateTime    @default(now())
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  client     Client      @relation(fields: [clientId], references: [id])
+  createdBy  User        @relation(fields: [createdById], references: [id])
+  lines      QuoteLine[]
+
+  @@unique([tenantId, number])
+}
+
+model QuoteLine {
+  id               String  @id @default(uuid())
+  quoteId          String
+  articleId        String?
+  surchargeId      String?
+  position         Int
+  extendedDesc     String?
+  quantity         Float
+  unitPrice        Float
+  netTotal         Float
+  grossTotal       Float
+
+  quote      Quote      @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  article    Article?   @relation(fields: [articleId], references: [id])
+  surcharge  Surcharge? @relation(fields: [surchargeId], references: [id])
 }
