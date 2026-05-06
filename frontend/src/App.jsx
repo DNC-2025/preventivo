@@ -1,18 +1,30 @@
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { SignedIn, SignedOut } from '@clerk/clerk-react'
+import LoginPage from './pages/LoginPage'
+import Layout from './components/Layout'
 
 function App() {
   return (
-    <main>
-      <h1>Preventivo</h1>
-      <SignedOut>
-        <p>Non sei loggato</p>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <p>Sei loggato!</p>
-        <UserButton />
-      </SignedIn>
-    </main>
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          <>
+            <SignedOut><LoginPage /></SignedOut>
+            <SignedIn><Navigate to="/" replace /></SignedIn>
+          </>
+        }
+      />
+      <Route
+        path="/*"
+        element={
+          <>
+            <SignedIn><Layout /></SignedIn>
+            <SignedOut><Navigate to="/login" replace /></SignedOut>
+          </>
+        }
+      />
+    </Routes>
   )
 }
 
