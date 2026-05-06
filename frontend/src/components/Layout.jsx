@@ -1,6 +1,7 @@
 import { Link, Routes, Route, useLocation } from 'react-router-dom'
 import { UserButton } from '@clerk/clerk-react'
 import DashboardPage from '../pages/DashboardPage'
+import ClientiPage from '../pages/ClientiPage'
 
 const navItems = [
   { path: '/',          label: 'Dashboard',  icon: '▦' },
@@ -78,9 +79,10 @@ function Layout() {
       {/* Main content */}
       <main style={{ marginLeft: 'var(--sidebar-width)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {/* Page content */}
-        <div style={{ flex: 1, padding: '1.5rem' }}>
+        <div style={{ flex: 1, padding: '1.5rem', maxWidth: '1200px' }}>
           <Routes>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/clienti" element={<ClientiPage />} />
           </Routes>
         </div>
       </main>
