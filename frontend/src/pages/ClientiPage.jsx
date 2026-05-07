@@ -13,20 +13,21 @@ function ClientiPage() {
   const [editingClient, setEditingClient] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
 
-  const fetchClients = async () => {
-    try {
-      const data = await clientsApi.getAll(getToken, search)
-      setClients(data)
-    } catch (err) {
-      toast.error('Errore nel caricamento clienti', err)
-    } finally {
-      setLoading(false)
-    }
+const fetchClients = useCallback(async () => {
+  try {
+    const data = await clientsApi.getAll(getToken, search)
+    setClients(data)
+  } catch (err) {
+    toast.error('Errore nel caricamento clienti', err)
+  } finally {
+    setLoading(false)
   }
+}, [search, getToken])
 
-  useEffect(() => {
-    fetchClients()
-  }, [search])
+useEffect(() => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  fetchClients()
+}, [fetchClients])
 
   const handleSave = async (formData) => {
     try {

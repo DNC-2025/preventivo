@@ -100,14 +100,37 @@ preventivo/
 
 ---
 
-## Comandi utili Prisma
+## Comandi Prisma
 
+### In sviluppo (locale)
 ```bash
-npx prisma generate       # rigenera il client dopo modifiche allo schema
-npx prisma db push        # applica lo schema al database
-npx prisma studio         # interfaccia visuale per il database
+# Modifica lo schema in prisma/schema.prisma, poi:
+npx prisma migrate dev --name descrizione_della_modifica
+```
+Crea il file di migration in `prisma/migrations/` e lo applica al DB.
+Usare SEMPRE questo comando in locale quando si cambia lo schema.
+
+### In produzione (Railway)
+```bash
+npx prisma migrate deploy
+```
+Applica le migration esistenti senza crearne di nuove.
+Usare SOLO in produzione, mai in sviluppo.
+
+### ⚠️ NON usare in sviluppo
+```bash
+npx prisma db push  # non crea storia migration → causa drift
 ```
 
+### Rigenerare il client Prisma (dopo modifiche allo schema)
+```bash
+npx prisma generate
+```
+
+### Visualizzare il DB nel browser
+```bash
+npx prisma studio
+```
 ---
 
 ## Stato sviluppo

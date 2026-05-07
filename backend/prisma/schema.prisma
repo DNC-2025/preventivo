@@ -80,6 +80,7 @@ model Article {
   unit      String
   price     Float
   active    Boolean  @default(true)
+  metadata  Json?                          //aggiunto v1.1
   createdAt DateTime @default(now())
 
   tenant     Tenant      @relation(fields: [tenantId], references: [id])
