@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { loadUser } from '../middleware/loadUser.middleware.js';
 import { tenantGuard } from '../middleware/tenantGuard.middleware.js';
+import { createClientValidator, updateClientValidator } from '../middleware/validators/client.validators.js';
 import {
   getClients,
   getClientById,
@@ -9,35 +10,16 @@ import {
   updateClient,
   deleteClient,
 } from '../controllers/clients.controller.js';
+import { validateRequest422 } from '../middleware/validateRequest.middleware.js';
 
 const router = Router();
 
 router.use(loadUser, tenantGuard);
 
-const clientValidation = [
-  body('nameOrCompany')
-    .notEmpty().withMessage('Il nome o ragione sociale è obbligatorio')
-    .isLength({ max: 200 }).withMessage('Nome troppo lungo (max 200 caratteri)'),
-  body('email')
-    .optional({ nullable: true, checkFalsy: true })
-    .isEmail().withMessage('Email non valida'),
-  body('phone')
-    .optional({ nullable: true, checkFalsy: true })
-    .isLength({ max: 20 }).withMessage('Telefono troppo lungo'),
-];
-
-const validate = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-  next();
-};
-
 router.get('/',     getClients);
 router.get('/:id',  getClientById);
-router.post('/',    clientValidation, validate, createClient);
-router.put('/:id',  clientValidation, validate, updateClient);
+router.post('/',    createClientValidator, validateRequest422, createClient);
+router.put('/:id',  updateClientValidator, validateRequest422, updateClient);
 router.delete('/:id', deleteClient);
 
 export default router;

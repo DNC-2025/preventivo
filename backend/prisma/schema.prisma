@@ -52,11 +52,11 @@ model Tenant {
   wastePercentDefault Float      @default(10.0)
   createdAt           DateTime   @default(now())
 
-  users       User[]
-  articles    Article[]
-  surcharges  Surcharge[]
-  clients     Client[]
-  quotes      Quote[]
+  users      User[]
+  articles   Article[]
+  surcharges Surcharge[]
+  clients    Client[]
+  quotes     Quote[]
 }
 
 model User {
@@ -68,8 +68,8 @@ model User {
   email     String
   createdAt DateTime @default(now())
 
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  quotes    Quote[]
+  tenant Tenant  @relation(fields: [tenantId], references: [id])
+  quotes Quote[]
 }
 
 model Article {
@@ -80,7 +80,7 @@ model Article {
   unit      String
   price     Float
   active    Boolean  @default(true)
-  metadata  Json?                          //aggiunto v1.1
+  metadata  Json? //aggiunto v1.1
   createdAt DateTime @default(now())
 
   tenant     Tenant      @relation(fields: [tenantId], references: [id])
@@ -100,17 +100,20 @@ model Surcharge {
 }
 
 model Client {
-  id                String   @id @default(uuid())
-  tenantId          String
-  nameOrCompany     String
-  address           String?
-  phone             String?
-  email             String?
-  notes             String?
-  createdAt         DateTime @default(now())
+  id            String  @id @default(uuid())
+  tenantId      String
+  nameOrCompany String
+  address       String?
+  country       String  @default("Italia")
+  phone         String?
+  email         String?
+  notes         String?
 
-  tenant  Tenant  @relation(fields: [tenantId], references: [id])
-  quotes  Quote[]
+  tenant Tenant  @relation(fields: [tenantId], references: [id])
+  quotes Quote[] // Un cliente può avere molti preventivi
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Quote {
@@ -128,27 +131,27 @@ model Quote {
   totalFinal   Float       @default(0)
   createdAt    DateTime    @default(now())
 
-  tenant     Tenant      @relation(fields: [tenantId], references: [id])
-  client     Client      @relation(fields: [clientId], references: [id])
-  createdBy  User        @relation(fields: [createdById], references: [id])
-  lines      QuoteLine[]
+  tenant    Tenant      @relation(fields: [tenantId], references: [id])
+  client    Client      @relation(fields: [clientId], references: [id])
+  createdBy User        @relation(fields: [createdById], references: [id])
+  lines     QuoteLine[]
 
   @@unique([tenantId, number])
 }
 
 model QuoteLine {
-  id               String  @id @default(uuid())
-  quoteId          String
-  articleId        String?
-  surchargeId      String?
-  position         Int
-  extendedDesc     String?
-  quantity         Float
-  unitPrice        Float
-  netTotal         Float
-  grossTotal       Float
+  id           String  @id @default(uuid())
+  quoteId      String
+  articleId    String?
+  surchargeId  String?
+  position     Int
+  extendedDesc String?
+  quantity     Float
+  unitPrice    Float
+  netTotal     Float
+  grossTotal   Float
 
-  quote      Quote      @relation(fields: [quoteId], references: [id], onDelete: Cascade)
-  article    Article?   @relation(fields: [articleId], references: [id])
-  surcharge  Surcharge? @relation(fields: [surchargeId], references: [id])
+  quote     Quote      @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  article   Article?   @relation(fields: [articleId], references: [id])
+  surcharge Surcharge? @relation(fields: [surchargeId], references: [id])
 }
