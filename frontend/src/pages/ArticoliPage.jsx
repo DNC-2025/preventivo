@@ -23,10 +23,8 @@ const fetchArticles = useCallback(async () => {
   try {
     setLoading(true)
     const data = await articlesApi.getAll(getToken, { search })
-    console.log('articles ricevuti:', data)
     setArticles(Array.isArray(data) ? data : [])
   } catch (err){
-    console.error(err)
     toast.error('Errore nel caricamento articoli')
   } finally {
     setLoading(false)

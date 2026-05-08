@@ -15,7 +15,13 @@ export const createClientValidator = [
     .isLength({ max: 100 })
     .withMessage('Il paese non può superare 100 caratteri'),
 
-    
+  body('city')
+    .optional({ values: 'falsy' })
+    .trim()
+    .isString()
+    .isLength({ max: 100 })
+    .withMessage('La città non può superare 100 caratteri'),
+
   body('email')
     .optional({ values: 'falsy' })
     .isEmail()
@@ -29,6 +35,12 @@ export const updateClientValidator = [
     .isLength({ max: 200 }),
 
   body('country')
+    .optional({ values: 'falsy' })
+    .trim()
+    .isString()
+    .isLength({ max: 100 }),
+    
+  body('city')
     .optional({ values: 'falsy' })
     .trim()
     .isString()

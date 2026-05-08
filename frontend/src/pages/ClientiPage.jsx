@@ -17,11 +17,8 @@ function ClientiPage() {
     try {
       setLoading(true)
       const data = await clientsApi.getAll(getToken, search)
-      console.log('clienti ricevuti:', data)
       setClients(Array.isArray(data) ? data : [])
     } catch (err) {
-      console.error('Errore fetch clienti:',err)
-      
       toast.error('Errore nel caricamento clienti')
     } finally {
       setLoading(false)
@@ -120,7 +117,7 @@ function ClientiPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
             <thead>
               <tr style={{ background: '#f9f9f8' }}>
-                {['Nome / Azienda', 'Telefono', 'Email', 'Indirizzo', ''].map(h => (
+                {['Nome / Azienda', 'Telefono', 'Email', 'Indirizzo', 'Città', 'Paese', ''].map(h => (
                   <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontWeight: '500', fontSize: '12px', color: '#888', borderBottom: '0.5px solid #e8e8e8' }}>{h}</th>
                 ))}
               </tr>
@@ -132,6 +129,8 @@ function ClientiPage() {
                   <td style={{ padding: '12px 16px', color: '#555' }}>{client.phone || '—'}</td>
                   <td style={{ padding: '12px 16px', color: '#555' }}>{client.email || '—'}</td>
                   <td style={{ padding: '12px 16px', color: '#555' }}>{client.address || '—'}</td>
+                  <td style={{ padding: '12px 16px', color: '#555' }}>{client.city || '—'}</td>
+                  <td style={{ padding: '12px 16px', color: '#555' }}>{client.country || '—'}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                     <button onClick={() => handleEdit(client)} style={{
                       padding: '4px 10px', fontSize: '12px', marginRight: '6px',

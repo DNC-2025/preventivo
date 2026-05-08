@@ -4,6 +4,8 @@ function ClienteForm({ client, onSave, onClose }) {
   const [form, setForm] = useState({
     nameOrCompany: client?.nameOrCompany || '',
     address: client?.address || '',
+    country: client?.country || 'Italia',
+    city: client?.city || '',
     phone: client?.phone || '',
     email: client?.email || '',
     notes: client?.notes || '',
@@ -37,6 +39,8 @@ function ClienteForm({ client, onSave, onClose }) {
         {[
           { label: 'Nome / Ragione sociale *', name: 'nameOrCompany', type: 'text', placeholder: 'Es. Rossi Marco o Rossi Srl' },
           { label: 'Indirizzo', name: 'address', type: 'text', placeholder: 'Via Roma 1, Milano' },
+          { label: 'Città', name: 'city', type: 'text', placeholder: 'Torino' },
+          { label: 'Paese', name: 'country', type: 'text', placeholder: 'Italia' }, 
           { label: 'Telefono', name: 'phone', type: 'text', placeholder: '+39 333 123 4567' },
           { label: 'Email', name: 'email', type: 'email', placeholder: 'nome@email.it' },
         ].map(field => (

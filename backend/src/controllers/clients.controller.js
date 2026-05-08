@@ -65,7 +65,7 @@ export const getClientById = async (req, res) => {
 // POST /api/v1/clients
 export const createClient = async (req, res) => {
   try {
-    const { nameOrCompany, address, country, phone, email, notes } = req.body;
+    const { nameOrCompany, address, country, city, phone, email, notes } = req.body;
 
     const client = await prisma.client.create({
       data: {
@@ -75,6 +75,7 @@ export const createClient = async (req, res) => {
         phone: phone || null,
         email: email || null,
         notes: notes || null,
+        city: city || null,
         country: country || 'Italia',
       },
     });
@@ -100,7 +101,7 @@ export const updateClient = async (req, res) => {
       return res.status(404).json({ error: 'Cliente non trovato' });
     }
 
-    const { nameOrCompany, address, country, phone, email, notes } = req.body;
+    const { nameOrCompany, address, country, city, phone, email, notes } = req.body;
 
     const client = await prisma.client.update({
       where: { id: req.params.id },
@@ -108,6 +109,7 @@ export const updateClient = async (req, res) => {
         ...(nameOrCompany !== undefined && { nameOrCompany }),
         ...(address !== undefined && { address }),
         ...(country !== undefined && { country: country || 'Italia' }),
+        ...(city !== undefined && { city }),
         ...(phone !== undefined && { phone }),
         ...(email !== undefined && { email }),
         ...(notes !== undefined && { notes }),
