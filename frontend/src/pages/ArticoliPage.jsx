@@ -21,15 +21,17 @@ function ArticoliPage() {
 
 const fetchArticles = useCallback(async () => {
   try {
+    setLoading(true)
     const data = await articlesApi.getAll(getToken, { search })
     console.log('articles ricevuti:', data)
-    setArticles(data)
-  } catch {
+    setArticles(Array.isArray(data) ? data : [])
+  } catch (err){
+    console.error(err)
     toast.error('Errore nel caricamento articoli')
   } finally {
     setLoading(false)
   }
-}, [search])
+}, [getToken, search])
 
   useEffect(() => {
     fetchArticles()
@@ -110,7 +112,7 @@ const fetchArticles = useCallback(async () => {
       {loading ? (
         <p style={{ color: '#888', fontSize: '13px' }}>Caricamento...</p>
       ) : articles.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#aaa' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#aaaaaa' }}>
           <p style={{ fontSize: '32px', marginBottom: '8px' }}>📦</p>
           <p style={{ fontSize: '14px' }}>Nessun articolo trovato</p>
           <p style={{ fontSize: '12px', marginTop: '4px' }}>Clicca "Nuovo articolo" per aggiungerne uno</p>
@@ -134,7 +136,7 @@ const fetchArticles = useCallback(async () => {
                   <td style={{ padding: '12px 16px', fontWeight: '500', color: '#1a1a1a' }}>{article.name}</td>
                   <td style={{ padding: '12px 16px', color: '#555' }}>{article.category}</td>
                   <td style={{ padding: '12px 16px', color: '#555' }}>{article.unit}</td>
-                  <td style={{ padding: '12px 16px', color: '#555' }}>€ {article.price.toFixed(2)}</td>
+                  <td style={{ padding: '12px 16px', color: '#555' }}>€ {Number(article.price || 0).toFixed(2)}</td>
                   <td style={{ padding: '12px 16px' }}>
                     <span style={{
                       fontSize: '11px', padding: '3px 8px', borderRadius: '20px',

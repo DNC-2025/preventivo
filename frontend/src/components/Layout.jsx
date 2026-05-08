@@ -16,7 +16,7 @@ function Layout() {
   const location = useLocation()
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'var(--sidebar-width) 1fr', minHeight: '100vh' }}>
+    <div style={{minHeight: '100vh' }}>
       
       {/* Sidebar */}
       <aside style={{
@@ -78,7 +78,12 @@ function Layout() {
       </aside>
 
       {/* Main content */}
-      <main style={{ marginLeft: 'var(--sidebar-width)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <main style={{
+        marginLeft: 'var(--sidebar-width)',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
         {/* Page content */}
         <div style={{ flex: 1, padding: '1.5rem', maxWidth: '1200px' }}>
           <Routes>

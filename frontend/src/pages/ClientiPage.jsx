@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback  } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import toast from 'react-hot-toast'
 import { clientsApi } from '../api/clients'
@@ -13,20 +13,24 @@ function ClientiPage() {
   const [editingClient, setEditingClient] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
 
-  const fetchClients = async () => {
+  const fetchClients = useCallback(async () => {
     try {
+      setLoading(true)
       const data = await clientsApi.getAll(getToken, search)
-      setClients(data)
+      console.log('clienti ricevuti:', data)
+      setClients(Array.isArray(data) ? data : [])
     } catch (err) {
-      toast.error('Errore nel caricamento clienti', err)
+      console.error('Errore fetch clienti:',err)
+      
+      toast.error('Errore nel caricamento clienti')
     } finally {
       setLoading(false)
     }
-  }
+  }, [getToken, search])
 
   useEffect(() => {
     fetchClients()
-  }, [search])
+  }, [fetchClients])
 
   const handleSave = async (formData) => {
     try {
